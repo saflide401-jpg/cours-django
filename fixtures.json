@@ -1,0 +1,169 @@
+[
+    {
+        "model": "library.author",
+        "pk": 1,
+        "fields": {
+            "firstname": "Chinua",
+            "lastname": "Achebe",
+            "birthdate": "1930-11-16",
+            "biography": "Écrivain nigérian, figure majeure de la littérature africaine. Auteur du roman 'Le Monde s'effondre'."
+        }
+    },
+    {
+        "model": "library.author",
+        "pk": 2,
+        "fields": {
+            "firstname": "Mariama",
+            "lastname": "Bâ",
+            "birthdate": "1929-04-17",
+            "biography": "Romancière sénégalaise engagée, auteure de 'Une si longue lettre'."
+        }
+    },
+    {
+        "model": "library.author",
+        "pk": 3,
+        "fields": {
+            "firstname": "George",
+            "lastname": "Orwell",
+            "birthdate": "1903-06-25",
+            "biography": "Écrivain et journaliste britannique, connu pour ses œuvres politiques et dystopiques."
+        }
+    },
+    {
+        "model": "library.category",
+        "pk": 1,
+        "fields": {
+            "name": "Roman",
+            "description": "Œuvres de fiction narrative."
+        }
+    },
+    {
+        "model": "library.category",
+        "pk": 2,
+        "fields": {
+            "name": "Littérature africaine",
+            "description": "Œuvres écrites par des auteurs africains."
+        }
+    },
+    {
+        "model": "library.category",
+        "pk": 3,
+        "fields": {
+            "name": "Science-fiction",
+            "description": "Fiction basée sur des sociétés futures ou alternatives."
+        }
+    },
+    {
+        "model": "library.category",
+        "pk": 4,
+        "fields": {
+            "name": "Essai",
+            "description": "Analyse critique et réflexion politique ou sociale."
+        }
+    },
+    {
+        "model": "library.book",
+        "pk": 1,
+        "fields": {
+            "title": "Le Monde s'effondre",
+            "author": [
+                1
+            ],
+            "category": [
+                1,
+                2
+            ],
+            "publication_date": "1958-06-17",
+            "summary": "Le roman décrit l'effondrement de la société igbo traditionnelle face à la colonisation européenne.",
+            "isbn": "9780435905255",
+            "cover_image": ""
+        }
+    },
+    {
+        "model": "library.book",
+        "pk": 2,
+        "fields": {
+            "title": "Une si longue lettre",
+            "author": [
+                2
+            ],
+            "category": [
+                1,
+                2
+            ],
+            "publication_date": "1979-01-01",
+            "summary": "Roman épistolaire dénonçant la condition féminine et la polygamie en Afrique de l'Ouest.",
+            "isbn": "9782708700919",
+            "cover_image": ""
+        }
+    },
+    {
+        "model": "library.book",
+        "pk": 3,
+        "fields": {
+            "title": "1984",
+            "author": [
+                3
+            ],
+            "category": [
+                1,
+                3,
+                4
+            ],
+            "publication_date": "1949-06-08",
+            "summary": "Roman dystopique décrivant une société totalitaire fondée sur la surveillance et la manipulation.",
+            "isbn": "9780451524935",
+            "cover_image": ""
+        }
+    },
+    {
+        "model": "library.exemplar",
+        "pk": 1,
+        "fields": {
+            "book": 1,
+            "state": "new",
+            "available": true,
+            "barcode": "BK-ACHEBE-001"
+        }
+    },
+    {
+        "model": "library.exemplar",
+        "pk": 2,
+        "fields": {
+            "book": 1,
+            "state": "used",
+            "available": false,
+            "barcode": "BK-ACHEBE-002"
+        }
+    },
+    {
+        "model": "library.exemplar",
+        "pk": 3,
+        "fields": {
+            "book": 2,
+            "state": "good",
+            "available": true,
+            "barcode": "BK-BA-001"
+        }
+    },
+    {
+        "model": "library.exemplar",
+        "pk": 4,
+        "fields": {
+            "book": 3,
+            "state": "damaged",
+            "available": false,
+            "barcode": "BK-ORWELL-001"
+        }
+    },
+    {
+        "model": "library.exemplar",
+        "pk": 5,
+        "fields": {
+            "book": 3,
+            "state": "good",
+            "available": true,
+            "barcode": "BK-ORWELL-002"
+        }
+    }
+]
