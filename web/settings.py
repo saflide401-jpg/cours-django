@@ -30,6 +30,7 @@ DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
+LOGIN_URL = "/login/"
 
 # Application definition
 
