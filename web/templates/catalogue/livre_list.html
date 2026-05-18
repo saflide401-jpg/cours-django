@@ -21,10 +21,10 @@
   </div>
 
   <div class="filtres-controls">
-    <select name="categorie" aria-label="Filtrer par catégorie">
+    <select name="categories1" aria-label="Filtrer par catégorie">
       <option value="">Toutes catégories</option>
       {% for cat in categories %}
-      <option value="{{ cat.pk }}" {% if request.GET.categorie == cat.pk|stringformat:"s" %}selected{% endif %}>
+      <option value="{{ cat.pk }}" {% if request.GET.categories == cat.pk|stringformat:"s" %}selected{% endif %}>
         {{ cat.name }}
       </option>
       {% endfor %}
