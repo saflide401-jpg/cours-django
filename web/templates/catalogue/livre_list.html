@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Catalogue · BiblioCampus{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Catalogue</h1>
+  <p class="lead">Parcourez les ouvrages disponibles à la bibliothèque universitaire.</p>
+</div>
+
+<form method="get" class="filtres-bar" id="filtres-catalogue">
+  <div class="filtres-search">
+    <input type="search"
+           name="q"
+           value="{{ request.GET.q }}"
+           placeholder="Titre, auteur, ISBN…"
+           aria-label="Rechercher">
+    <span class="search-icon">🔍</span>
+  </div>
+
+  <div class="filtres-controls">
+    <select name="categorie" aria-label="Filtrer par catégorie">
+      <option value="">Toutes catégories</option>
+      {% for cat in categories %}
+        <option value="{{ cat.slug }}"
+                {% if request.GET.categorie == cat.slug %}selected{% endif %}>
+          {{ cat.nom }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <label class="checkbox-label">
+      <input type="checkbox" name="dispo" value="1"
+             {% if request.GET.dispo %}checked{% endif %}>
+      <span>Disponibles uniquement</span>
+    </label>
+
+    <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+    {% if request.GET %}
+      <a href="{% url 'catalogue:livre_list' %}" class="btn btn-link btn-sm">Réinitialiser</a>
+    {% endif %}
+  </div>
+</form>
+
+{% if livres %}
+  <div class="grille-livres">
+    {% for livre in livres %}
+      {% include "partials/_livre_card.html" with livre=livre %}
+    {% endfor %}
+  </div>
+
+  {% include "partials/_pagination.html" with page_obj=page_obj %}
+{% else %}
+  <div class="empty-state">
+    <span class="empty-icon">📚</span>
+    <h2>Aucun livre ne correspond à votre recherche</h2>
+    <p>Essayez de modifier vos filtres ou de simplifier votre recherche.</p>
+    <a href="{% url 'catalogue:livre_list' %}" class="btn btn-primary">
+      Voir tout le catalogue
+    </a>
+  </div>
+{% endif %}
+{% endblock %}

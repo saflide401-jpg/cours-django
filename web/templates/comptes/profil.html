@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Mon profil · BiblioCampus{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Mon profil</h1>
+  <p class="lead">Vos informations et votre activité.</p>
+</div>
+
+<div class="profil-grid">
+  <section class="card">
+    <h2>Identité</h2>
+    {% if profil %}
+      <dl class="dl-grid">
+        <dt>Nom complet</dt>
+        <dd>{{ user.get_full_name|default:user.username }}</dd>
+
+        <dt>E-mail</dt>
+        <dd>{{ user.email|default:"—" }}</dd>
+
+        <dt>Numéro étudiant</dt>
+        <dd>{{ profil.numero_etudiant }}</dd>
+
+        <dt>Niveau</dt>
+        <dd>{{ profil.get_niveau_display }}</dd>
+
+        <dt>Filière</dt>
+        <dd>{{ profil.filiere|default:"—" }}</dd>
+
+        <dt>Quota d'emprunts</dt>
+        <dd>{{ profil.quota_emprunts }} livres simultanés</dd>
+
+        <dt>Durée de prêt</dt>
+        <dd>{{ profil.duree_pret }} jours</dd>
+      </dl>
+    {% else %}
+      <div class="alert alert-warning">
+        Votre compte n'a pas de profil étudiant associé. Contactez la bibliothèque.
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <h2>Activité</h2>
+    <div class="stats-row">
+      <div class="stat">
+        <span class="stat-value">{{ emprunts_en_cours|length }}</span>
+        <span class="stat-label">en cours</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ nb_emprunts_total }}</span>
+        <span class="stat-label">au total</span>
+      </div>
+    </div>
+
+    {% if emprunts_en_cours %}
+      <h3>Emprunts en cours</h3>
+      <ul class="liste-emprunts">
+        {% for emprunt in emprunts_en_cours %}
+          <li class="{% if emprunt.est_en_retard %}retard{% endif %}">
+            <a href="{% url 'catalogue:livre_detail' emprunt.exemplaire.livre.pk %}">
+              {{ emprunt.exemplaire.livre.titre }}
+            </a>
+            <span class="echeance">
+              {% if emprunt.est_en_retard %}
+                ⚠ {{ emprunt.jours_de_retard }} jour{{ emprunt.jours_de_retard|pluralize }} de retard
+              {% else %}
+                à rendre le {{ emprunt.date_retour_prevue|date:"d/m/Y" }}
+              {% endif %}
+            </span>
+          </li>
+        {% endfor %}
+      </ul>
+      <a href="{% url 'circulation:emprunt_list' %}" class="btn btn-outline">
+        Voir tous mes emprunts
+      </a>
+    {% else %}
+      <p class="vide">Aucun emprunt en cours actuellement.</p>
+      <a href="{% url 'catalogue:livre_list' %}" class="btn btn-primary">
+        Parcourir le catalogue
+      </a>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

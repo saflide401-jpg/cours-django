@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Retour · {{ emprunt.exemplaire.livre.titre }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">
+  <a href="{% url 'biblio:dashboard' %}">Tableau de bord</a>
+  <span class="separator">›</span>
+  <span aria-current="page">Enregistrer un retour</span>
+</nav>
+
+<div class="page-header">
+  <h1>Enregistrer un retour</h1>
+</div>
+
+<div class="form-page">
+  <aside class="recap-card">
+    <h2>Emprunt à clôturer</h2>
+    <dl class="dl-grid">
+      <dt>Livre</dt>
+      <dd>{{ emprunt.exemplaire.livre.titre }}</dd>
+
+      <dt>Code-barre</dt>
+      <dd><code>{{ emprunt.exemplaire.code_barre }}</code></dd>
+
+      <dt>Emprunté par</dt>
+      <dd>
+        {{ emprunt.etudiant.user.get_full_name|default:emprunt.etudiant.user.username }}
+        <small>({{ emprunt.etudiant.numero_etudiant }})</small>
+      </dd>
+
+      <dt>Emprunté le</dt>
+      <dd>{{ emprunt.date_emprunt|date:"d/m/Y à H:i" }}</dd>
+
+      <dt>À rendre avant</dt>
+      <dd>{{ emprunt.date_retour_prevue|date:"d/m/Y" }}</dd>
+    </dl>
+
+    {% if emprunt.est_en_retard %}
+      <div class="callout callout-warning">
+        <strong>⚠ Retour avec retard</strong><br>
+        Cet emprunt présente {{ emprunt.jours_de_retard }} jour{{ emprunt.jours_de_retard|pluralize }} de retard.
+      </div>
+    {% endif %}
+  </aside>
+
+  <form method="post" class="form" data-confirm="Confirmer le retour de cet ouvrage ?">
+    {% csrf_token %}
+
+    <div class="form-row">
+      <label for="{{ form.etat_retour.id_for_label }}">{{ form.etat_retour.label }}</label>
+      {{ form.etat_retour }}
+      {% if form.etat_retour.help_text %}
+        <small class="help-text">{{ form.etat_retour.help_text }}</small>
+      {% endif %}
+      {{ form.etat_retour.errors }}
+    </div>
+
+    <div class="form-row">
+      <label for="{{ form.commentaire.id_for_label }}">{{ form.commentaire.label }}</label>
+      {{ form.commentaire }}
+      {{ form.commentaire.errors }}
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Confirmer le retour</button>
+      <a href="{% url 'biblio:dashboard' %}" class="btn btn-link">Annuler</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

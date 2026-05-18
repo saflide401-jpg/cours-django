@@ -72,7 +72,9 @@ class Exemplar(models.Model):
 
 
 class StudentProfile(models.Model):
-    user = models.OneToOneField("auth.User", on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        "auth.User", on_delete=models.CASCADE, related_name="student_profile"
+    )
     matricule = models.CharField("Matricule/INE", max_length=20, unique=True)
     birthdate = models.DateField("Date de naissance", null=True)
 
@@ -85,12 +87,15 @@ class StudentProfile(models.Model):
 
 
 class Borrowing(models.Model):
-    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name="borrowings")
     exemplar = models.ForeignKey(
         Exemplar, on_delete=models.CASCADE, related_name="borrowings"
     )
     borrow_date = models.DateField("Date d'emprunt", auto_now_add=True)
     return_date = models.DateField("Date de retour", null=True, blank=True)
+    expected_return_date = models.DateField(
+        "Date de retour prévue", null=True, blank=True
+    )
     librarian = models.ForeignKey(
         "auth.User",
         on_delete=models.SET_NULL,

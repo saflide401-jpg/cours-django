@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Mes réservations · BiblioCampus{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Mes réservations</h1>
+  <p class="lead">Les ouvrages que vous attendez actuellement.</p>
+</div>
+
+{% if reservations %}
+  <div class="table-wrapper">
+    <table class="tableau-emprunts">
+      <thead>
+        <tr>
+          <th>Livre</th>
+          <th>Réservé le</th>
+          <th>Statut</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reservations %}
+          <tr>
+            <td>
+              <a href="{% url 'catalogue:livre_detail' r.livre.pk %}" class="lien-livre">
+                {{ r.livre.titre }}
+              </a>
+              <small class="text-muted">
+                {% for auteur in r.livre.auteurs.all %}{{ auteur }}{% if not forloop.last %}, {% endif %}{% endfor %}
+              </small>
+            </td>
+            <td>{{ r.date_creation|date:"d/m/Y" }}</td>
+            <td>
+              {% if r.statut == "ATTENTE" %}
+                <span class="badge badge-info">{{ r.get_statut_display }}</span>
+              {% elif r.statut == "DISPO" %}
+                <span class="badge badge-success">{{ r.get_statut_display }}</span>
+              {% elif r.statut == "HONOR" %}
+                <span class="badge badge-muted">{{ r.get_statut_display }}</span>
+              {% else %}
+                <span class="badge badge-muted">{{ r.get_statut_display }}</span>
+              {% endif %}
+            </td>
+            <td class="text-right">
+              {% if r.statut == "ATTENTE" or r.statut == "DISPO" %}
+                <form method="post"
+                      action="{% url 'circulation:reservation_annuler' r.pk %}"
+                      class="inline-form"
+                      data-confirm="Annuler cette réservation ?">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-link btn-sm">Annuler</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "partials/_pagination.html" with page_obj=page_obj %}
+{% else %}
+  <div class="empty-state">
+    <span class="empty-icon">🔔</span>
+    <h2>Aucune réservation en cours</h2>
+    <p>Lorsqu'un ouvrage est indisponible, vous pouvez le réserver depuis sa fiche.</p>
+    <a href="{% url 'catalogue:livre_list' %}" class="btn btn-primary">
+      Parcourir le catalogue
+    </a>
+  </div>
+{% endif %}
+{% endblock %}

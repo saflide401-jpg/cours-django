@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Emprunter · {{ livre.titre }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">
+  <a href="{% url 'catalogue:livre_list' %}">Catalogue</a>
+  <span class="separator">›</span>
+  <a href="{% url 'catalogue:livre_detail' livre.pk %}">{{ livre.titre }}</a>
+  <span class="separator">›</span>
+  <span aria-current="page">Emprunter</span>
+</nav>
+
+<div class="page-header">
+  <h1>Emprunter « {{ livre.titre }} »</h1>
+</div>
+
+<div class="form-page">
+  <aside class="recap-card">
+    <h2>Récapitulatif</h2>
+    <dl class="dl-grid">
+      <dt>Livre</dt>
+      <dd>{{ livre.titre }}</dd>
+
+      <dt>Auteur(s)</dt>
+      <dd>
+        {% for auteur in livre.auteurs.all %}
+          {{ auteur }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </dd>
+
+      <dt>Durée de prêt</dt>
+      <dd>{{ duree_pret }} jours</dd>
+
+      <dt>Emprunts en cours</dt>
+      <dd>
+        {{ user.profil.emprunts_en_cours.count }} / {{ user.profil.quota_emprunts }}
+      </dd>
+    </dl>
+
+    <div class="callout callout-info">
+      <strong>Bon à savoir :</strong> en cas de retard, vous ne pourrez plus
+      effectuer de nouveaux emprunts tant que le livre n'est pas restitué.
+    </div>
+  </aside>
+
+  <form method="post" class="form" data-confirm="Confirmer l'emprunt ?">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="form-row">
+      <label for="{{ form.exemplaire.id_for_label }}">{{ form.exemplaire.label }}</label>
+      {{ form.exemplaire }}
+      {% if form.exemplaire.help_text %}
+        <small class="help-text">{{ form.exemplaire.help_text }}</small>
+      {% endif %}
+      {{ form.exemplaire.errors }}
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Confirmer l'emprunt</button>
+      <a href="{% url 'catalogue:livre_detail' livre.pk %}" class="btn btn-link">Annuler</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

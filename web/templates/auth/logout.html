@@ -1,15 +1,15 @@
 {% extends "base.html" %}
-
-{% block title %}Déconnecté{% endblock %}
+{% block title %}Déconnecté · BiblioCampus{% endblock %}
 
 {% block content %}
-
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <h2 class="mb-4">Déconnecté</h2>
-        <p>Vous avez été déconnecté avec succès.</p>
-        <a href="{% url 'login' %}" class="btn btn-primary">Se connecter à nouveau</a>
+<div class="auth-page">
+    <div class="auth-card text-center">
+        <h1>À bientôt 👋</h1>
+        <p class="lead">Vous avez été déconnecté avec succès.</p>
+        <div class="form-actions">
+            <a href="{% url 'login' %}" class="btn btn-primary">Se reconnecter</a>
+            <a href="{# url 'catalogue:livre_list' #}" class="btn btn-link">Retour au catalogue</a>
+        </div>
     </div>
 </div>
-
 {% endblock %}

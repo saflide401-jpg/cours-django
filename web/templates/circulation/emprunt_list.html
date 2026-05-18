@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Mes emprunts · BiblioCampus{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Mes emprunts</h1>
+  <p class="lead">Suivez vos prêts en cours et votre historique.</p>
+</div>
+
+<div class="onglets" role="tablist">
+  <a href="?statut=en_cours"
+     role="tab"
+     class="onglet {% if statut == 'en_cours' %}actif{% endif %}"
+     aria-selected="{% if statut == 'en_cours' %}true{% else %}false{% endif %}">
+    En cours <span class="onglet-count">{{ stats.en_cours }}</span>
+  </a>
+  <a href="?statut=retard"
+     role="tab"
+     class="onglet {% if statut == 'retard' %}actif{% endif %} {% if stats.retards %}onglet-alerte{% endif %}"
+     aria-selected="{% if statut == 'retard' %}true{% else %}false{% endif %}">
+    En retard <span class="onglet-count">{{ stats.retards }}</span>
+  </a>
+  <a href="?statut=historique"
+     role="tab"
+     class="onglet {% if statut == 'historique' %}actif{% endif %}"
+     aria-selected="{% if statut == 'historique' %}true{% else %}false{% endif %}">
+    Historique <span class="onglet-count">{{ stats.historique }}</span>
+  </a>
+</div>
+
+{% if emprunts %}
+  <div class="table-wrapper">
+    <table class="tableau-emprunts">
+      <thead>
+        <tr>
+          <th>Livre</th>
+          <th>Emprunté le</th>
+          <th>À rendre avant</th>
+          <th>Statut</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for emprunt in emprunts %}
+          <tr class="{% if emprunt.est_en_retard %}ligne-retard{% endif %}">
+            <td>
+              <a href="{% url 'catalogue:livre_detail' emprunt.exemplaire.livre.pk %}"
+                 class="lien-livre">
+                {{ emprunt.exemplaire.livre.titre }}
+              </a>
+              <small class="text-muted">{{ emprunt.exemplaire.code_barre }}</small>
+            </td>
+            <td>{{ emprunt.date_emprunt|date:"d/m/Y" }}</td>
+            <td>{{ emprunt.date_retour_prevue|date:"d/m/Y" }}</td>
+            <td>
+              {% if emprunt.est_rendu %}
+                <span class="badge badge-muted">
+                  Rendu le {{ emprunt.date_retour_effective|date:"d/m/Y" }}
+                </span>
+              {% elif emprunt.est_en_retard %}
+                <span class="badge badge-danger">
+                  ⚠ {{ emprunt.jours_de_retard }} jour{{ emprunt.jours_de_retard|pluralize }} de retard
+                </span>
+              {% else %}
+                <span class="badge badge-success">En cours</span>
+              {% endif %}
+            </td>
+            <td class="text-right">
+              {% if not emprunt.est_rendu and perms.circulation.change_emprunt %}
+                <a href="{% url 'circulation:emprunt_retour' emprunt.pk %}"
+                   class="btn btn-outline btn-sm">
+                  Enregistrer le retour
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "partials/_pagination.html" with page_obj=page_obj %}
+{% else %}
+  <div class="empty-state">
+    {% if statut == "en_cours" %}
+      <span class="empty-icon">📭</span>
+      <h2>Aucun emprunt en cours</h2>
+      <p>Parcourez le catalogue pour trouver votre prochaine lecture.</p>
+      <a href="{% url 'catalogue:livre_list' %}" class="btn btn-primary">
+        Explorer le catalogue
+      </a>
+    {% elif statut == "retard" %}
+      <span class="empty-icon">✅</span>
+      <h2>Aucun retard à signaler</h2>
+      <p>Bravo, vous êtes à jour !</p>
+    {% else %}
+      <span class="empty-icon">📚</span>
+      <h2>Aucun emprunt dans l'historique</h2>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

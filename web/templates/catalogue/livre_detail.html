@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}{{ livre.titre }} · BiblioCampus{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb" aria-label="Fil d'Ariane">
+  <a href="{# url 'catalogue:livre_list' #}">Catalogue</a>
+  <span class="separator">›</span>
+  <span aria-current="page">{{ livre.titre }}</span>
+</nav>
+
+<article class="livre-detail">
+  <div class="livre-detail-cover">
+    {% if livre.couverture %}
+    <img src="{{ livre.couverture.url }}" alt="Couverture de {{ livre.titre }}">
+    {% else %}
+    <div class="cover-placeholder">📖</div>
+    {% endif %}
+  </div>
+
+  <div class="livre-detail-info">
+    <h1>{{ livre.title }}</h1>
+
+    <p class="livre-detail-authors">
+      Par
+      {% for auteur in livre.auteurs.all %}
+      <a href="{# url 'catalogue:auteur_detail' auteur.pk #}">{{ auteur }}</a>{% if not forloop.last %}, {% endif %}
+      {% empty %}
+      <em>Auteur inconnu</em>
+      {% endfor %}
+    </p>
+
+    <dl class="dl-grid">
+      <dt>Éditeur</dt>
+      <dd>{{ livre.editeur }}</dd>
+
+      <dt>Année</dt>
+      <dd>{{ livre.annee_publication }}</dd>
+
+      <dt>ISBN</dt>
+      <dd>{{ livre.isbn }}</dd>
+
+      <dt>Pages</dt>
+      <dd>{{ livre.nb_pages }}</dd>
+
+      {% if livre.categories.all %}
+      <dt>Catégories</dt>
+      <dd>
+        {% for cat in livre.categories.all %}
+        <span class="tag">{{ cat.nom }}</span>
+        {% endfor %}
+      </dd>
+      {% endif %}
+    </dl>
+
+    <div class="livre-detail-dispo">
+      {% with dispo=livre.nb_exemplaires_disponibles %}
+      {% if dispo > 0 %}
+      <span class="badge badge-success badge-lg">
+        ✓ {{ dispo }} exemplaire{{ dispo|pluralize }} disponible{{ dispo|pluralize }}
+      </span>
+      {% else %}
+      <span class="badge badge-warning badge-lg">
+        ⚠ Aucun exemplaire disponible
+      </span>
+      {% endif %}
+      {% endwith %}
+    </div>
+
+    <div class="livre-detail-actions">
+      {% if user.is_authenticated %}
+      {% if peut_emprunter %}
+      <a href="{# url 'circulation:emprunt_creer' livre.pk #}" class="btn btn-primary btn-lg">
+        📚 Emprunter ce livre
+      </a>
+      {% elif not livre.est_disponible %}
+      <a href="{# url 'circulation:reservation_creer' livre.pk #}" class="btn btn-secondary btn-lg">
+        🔔 Réserver
+      </a>
+      <p class="action-info">
+        Vous serez notifié dès qu'un exemplaire sera disponible.
+      </p>
+      {% else %}
+      <div class="alert alert-info">{{ raison_blocage }}</div>
+      {% endif %}
+      {% else %}
+      <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary btn-lg">
+        Se connecter pour emprunter
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if livre.resume %}
+  <section class="livre-detail-resume">
+    <h2>Résumé</h2>
+    <p>{{ livre.resume|linebreaks }}</p>
+  </section>
+  {% endif %}
+
+  <section class="livre-detail-exemplaires">
+    <h2>Exemplaires</h2>
+    <table class="table-simple">
+      <thead>
+        <tr>
+          <th>Code-barre</th>
+          <th>État</th>
+          <th>Localisation</th>
+          <th>Disponibilité</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ex in livre.exemplaires.all %}
+        <tr>
+          <td><code>{{ ex.code_barre }}</code></td>
+          <td>{{ ex.get_etat_display }}</td>
+          <td>{{ ex.localisation }}</td>
+          <td>
+            {% if ex.est_empruntable %}
+            <span class="badge badge-success">Disponible</span>
+            {% else %}
+            <span class="badge badge-muted">Emprunté</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="vide">Aucun exemplaire enregistré.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</article>
+{% endblock %}

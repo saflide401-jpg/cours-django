@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ auteur }} · BiblioCampus{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">
+  <a href="{% url 'catalogue:livre_list' %}">Catalogue</a>
+  <span class="separator">›</span>
+  <span aria-current="page">{{ auteur }}</span>
+</nav>
+
+<article class="auteur-detail">
+  <header class="auteur-header">
+    <h1>{{ auteur.prenom }} {{ auteur.nom }}</h1>
+    <dl class="auteur-meta">
+      {% if auteur.nationalite %}
+        <dt>Nationalité</dt>
+        <dd>{{ auteur.nationalite }}</dd>
+      {% endif %}
+      {% if auteur.date_naissance %}
+        <dt>Naissance</dt>
+        <dd>{{ auteur.date_naissance|date:"d F Y" }}</dd>
+      {% endif %}
+    </dl>
+    {% if auteur.biographie %}
+      <p class="auteur-bio">{{ auteur.biographie|linebreaks }}</p>
+    {% endif %}
+  </header>
+
+  <h2>Ouvrages disponibles ({{ livres|length }})</h2>
+  {% if livres %}
+    <div class="grille-livres">
+      {% for livre in livres %}
+        {% include "partials/_livre_card.html" with livre=livre %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="vide">Aucun ouvrage de cet auteur n'est référencé.</p>
+  {% endif %}
+</article>
+{% endblock %}

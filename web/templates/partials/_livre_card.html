@@ -1,0 +1,43 @@
+{% load static %}
+<article class="livre-card">
+  <a href="{% url 'catalogue:livre_detail' livre.pk %}" class="livre-card-link">
+    <div class="livre-card-cover">
+      {% if livre.couverture %}
+        <img src="{{ livre.couverture.url }}" alt="Couverture de {{ livre.titre }}">
+      {% else %}
+        <div class="livre-card-cover-placeholder">
+          <span>📖</span>
+        </div>
+      {% endif %}
+
+      {% with dispo=livre.nb_exemplaires_disponibles %}
+        {% if dispo > 0 %}
+          <span class="livre-card-badge badge badge-success">Disponible</span>
+        {% else %}
+          <span class="livre-card-badge badge badge-warning">Indisponible</span>
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <div class="livre-card-body">
+      <h3 class="livre-card-title">{{ livre.titre }}</h3>
+      <p class="livre-card-authors">
+        {% for auteur in livre.auteurs.all %}
+          {{ auteur }}{% if not forloop.last %}, {% endif %}
+        {% empty %}
+          <em>Auteur inconnu</em>
+        {% endfor %}
+      </p>
+      <p class="livre-card-meta">
+        {{ livre.editeur }} · {{ livre.annee_publication }}
+      </p>
+      {% if livre.categories.all %}
+        <div class="livre-card-tags">
+          {% for cat in livre.categories.all %}
+            <span class="tag">{{ cat.nom }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </a>
+</article>

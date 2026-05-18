@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Retards · Bibliothèque{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">
+  <a href="{% url 'biblio:dashboard' %}">Tableau de bord</a>
+  <span class="separator">›</span>
+  <span aria-current="page">Retards</span>
+</nav>
+
+<div class="page-header">
+  <h1>Emprunts en retard</h1>
+  <p class="lead">{{ emprunts|length }} emprunt{{ emprunts|length|pluralize }} non rendu{{ emprunts|length|pluralize }} dans les délais.</p>
+</div>
+
+{% if emprunts %}
+  <div class="table-wrapper">
+    <table class="tableau-emprunts">
+      <thead>
+        <tr>
+          <th>Livre</th>
+          <th>Étudiant</th>
+          <th>Emprunté le</th>
+          <th>À rendre avant</th>
+          <th>Retard</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for emprunt in emprunts %}
+          <tr class="ligne-retard">
+            <td>
+              <a href="{% url 'catalogue:livre_detail' emprunt.exemplaire.livre.pk %}"
+                 class="lien-livre">
+                {{ emprunt.exemplaire.livre.titre }}
+              </a>
+              <small class="text-muted">{{ emprunt.exemplaire.code_barre }}</small>
+            </td>
+            <td>
+              {{ emprunt.etudiant.user.get_full_name|default:emprunt.etudiant.user.username }}
+              <small class="text-muted">{{ emprunt.etudiant.numero_etudiant }}</small>
+            </td>
+            <td>{{ emprunt.date_emprunt|date:"d/m/Y" }}</td>
+            <td>{{ emprunt.date_retour_prevue|date:"d/m/Y" }}</td>
+            <td>
+              <span class="badge badge-danger">
+                {{ emprunt.jours_de_retard }} jour{{ emprunt.jours_de_retard|pluralize }}
+              </span>
+            </td>
+            <td class="text-right">
+              <a href="{% url 'circulation:emprunt_retour' emprunt.pk %}"
+                 class="btn btn-outline btn-sm">
+                Enregistrer le retour
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="empty-state">
+    <span class="empty-icon">🎉</span>
+    <h2>Aucun retard en cours</h2>
+    <p>Tous les emprunts sont à jour.</p>
+  </div>
+{% endif %}
+{% endblock %}

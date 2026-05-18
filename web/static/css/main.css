@@ -1,0 +1,255 @@
+/* =====================================================================
+ * BiblioCampus — feuille de style principale
+ * Inspirée de la charte Django : vert profond, accents dorés.
+ * ===================================================================== */
+
+/* --------- TOKENS DE DESIGN --------- */
+:root {
+  /* Palette */
+  --color-primary: #0c4b33;
+  --color-primary-dark: #092e1f;
+  --color-secondary: #44b78b;
+  --color-accent: #f4b400;
+  --color-success: #16a34a;
+  --color-warning: #ea580c;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+
+  /* Neutres */
+  --color-bg: #f8faf9;
+  --color-surface: #ffffff;
+  --color-border: #e2e8e5;
+  --color-text: #1f2937;
+  --color-text-mid: #4b5563;
+  --color-text-muted: #6b7280;
+  --color-text-light: #9ca3af;
+
+  /* Typographie */
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  --font-heading: Georgia, "Times New Roman", serif;
+  --font-mono: "SF Mono", Monaco, Consolas, "Courier New", monospace;
+
+  /* Espacements */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+
+  /* Rayons */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Ombres */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+
+  /* Transitions */
+  --transition: 150ms ease;
+}
+
+/* --------- RESET DOUX --------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { font-size: 16px; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+/* --------- TYPOGRAPHIE --------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-primary);
+  margin: 0 0 var(--space-4);
+}
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.625rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.0625rem; }
+
+p { margin: 0 0 var(--space-4); }
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+a:hover { color: var(--color-secondary); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--color-bg);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm);
+}
+
+.lead {
+  font-size: 1.0625rem;
+  color: var(--color-text-mid);
+}
+
+.text-muted { color: var(--color-text-muted); font-size: 0.875rem; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+
+/* --------- LAYOUT --------- */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+main {
+  flex: 1;
+  padding: var(--space-6) 0 var(--space-8);
+}
+
+.page-header {
+  margin-bottom: var(--space-6);
+}
+.page-header h1 { margin-bottom: var(--space-2); }
+.page-header .lead { margin: 0; }
+
+/* --------- NAVBAR --------- */
+.navbar {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  gap: var(--space-4);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: white;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.navbar-brand:hover { color: var(--color-accent); }
+.navbar-logo { font-size: 1.5rem; }
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex: 1;
+  margin-left: var(--space-6);
+}
+.navbar-links a {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9375rem;
+  padding: var(--space-2) 0;
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition);
+}
+.navbar-links a:hover {
+  color: white;
+  border-bottom-color: var(--color-accent);
+}
+.navbar-links a.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+.navbar-links a.badge-pro::before {
+  content: "★";
+  margin-right: 4px;
+  color: var(--color-accent);
+}
+
+.navbar-account {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.navbar-user {
+  color: white;
+  font-size: 0.9375rem;
+}
+.navbar-user:hover { color: var(--color-accent); }
+
+.logout-form { margin: 0; display: inline; }
+.logout-form button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: var(--space-1) var(--space-2);
+}
+.logout-form button:hover { color: white; }
+
+/* --------- FOOTER --------- */
+.site-footer {
+  background: var(--color-primary-dark);
+  color: rgba(255, 255, 255, 0.7);
+  padding: var(--space-5) 0;
+  margin-top: var(--space-8);
+  font-size: 0.875rem;
+  text-align: center;
+}
+.site-footer p { margin: 0; }
+.site-footer strong { color: var(--color-accent); }
+
+/* --------- BREADCRUMB --------- */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+}
+.breadcrumb .separator {
+  color: var(--color-text-light);
+}
+.breadcrumb a { color: var(--color-text-mid); }
+.breadcrumb a:hover { color: var(--color-primary); }
+
+/* --------- RESPONSIVE --------- */
+@media (max-width: 800px) {
+  .navbar-inner { flex-wrap: wrap; height: auto; padding: var(--space-3) 0; }
+  .navbar-links {
+    order: 3;
+    width: 100%;
+    margin: var(--space-3) 0 0;
+    overflow-x: auto;
+    gap: var(--space-4);
+  }
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.375rem; }
+}

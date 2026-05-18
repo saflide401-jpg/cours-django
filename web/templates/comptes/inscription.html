@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Inscription · BiblioCampus{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card auth-card-wide">
+    <h1>Créer un compte étudiant</h1>
+    <p class="lead">Renseignez les informations ci-dessous pour accéder au catalogue.</p>
+
+    <form method="post" class="form">
+      {% csrf_token %}
+
+      <div class="form-section">
+        <h2>Identité</h2>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label for="{{ form.first_name.id_for_label }}">Prénom *</label>
+            {{ form.first_name }}
+            {{ form.first_name.errors }}
+          </div>
+          <div class="form-row">
+            <label for="{{ form.last_name.id_for_label }}">Nom *</label>
+            {{ form.last_name }}
+            {{ form.last_name.errors }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.email.id_for_label }}">E-mail universitaire *</label>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Cursus</h2>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label for="{{ form.numero_etudiant.id_for_label }}">Numéro étudiant *</label>
+            {{ form.numero_etudiant }}
+            {{ form.numero_etudiant.errors }}
+          </div>
+          <div class="form-row">
+            <label for="{{ form.niveau.id_for_label }}">Niveau *</label>
+            {{ form.niveau }}
+            {{ form.niveau.errors }}
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="{{ form.filiere.id_for_label }}">Filière</label>
+          {{ form.filiere }}
+          <small class="help-text">Optionnel — ex : Informatique, Histoire, Droit…</small>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Accès</h2>
+        <div class="form-row">
+          <label for="{{ form.username.id_for_label }}">Nom d'utilisateur *</label>
+          {{ form.username }}
+          <small class="help-text">{{ form.username.help_text }}</small>
+          {{ form.username.errors }}
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label for="{{ form.password1.id_for_label }}">Mot de passe *</label>
+            {{ form.password1 }}
+            {% if form.password1.help_text %}
+              <small class="help-text">{{ form.password1.help_text|safe }}</small>
+            {% endif %}
+            {{ form.password1.errors }}
+          </div>
+          <div class="form-row">
+            <label for="{{ form.password2.id_for_label }}">Confirmation *</label>
+            {{ form.password2 }}
+            {{ form.password2.errors }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Créer mon compte</button>
+        <a href="{% url 'login' %}" class="btn btn-link">J'ai déjà un compte</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Réserver · {{ livre.titre }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">
+  <a href="{% url 'catalogue:livre_list' %}">Catalogue</a>
+  <span class="separator">›</span>
+  <a href="{% url 'catalogue:livre_detail' livre.pk %}">{{ livre.titre }}</a>
+  <span class="separator">›</span>
+  <span aria-current="page">Réserver</span>
+</nav>
+
+<div class="form-page">
+  <div class="auth-card">
+    <h1>Réserver « {{ livre.titre }} »</h1>
+
+    <p class="lead">
+      Tous les exemplaires de ce livre sont actuellement empruntés.
+      En réservant, vous serez prioritaire dès qu'un exemplaire reviendra à la bibliothèque.
+    </p>
+
+    <div class="callout callout-info">
+      <strong>Comment ça marche ?</strong><br>
+      Vous recevrez une notification dès qu'un exemplaire sera disponible.
+      Vous aurez alors 48 heures pour venir le retirer à la bibliothèque,
+      sans quoi votre réservation sera annulée.
+    </div>
+
+    <form method="post" class="form">
+      {% csrf_token %}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
+        <a href="{% url 'catalogue:livre_detail' livre.pk %}" class="btn btn-link">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
