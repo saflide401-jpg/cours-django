@@ -1,42 +1,42 @@
 {% load static %}
 <article class="livre-card">
-  <a href="{% url 'catalogue:livre_detail' livre.pk %}" class="livre-card-link">
+  <a href="{% url 'app:book-detail' object.pk %}" class="livre-card-link">
     <div class="livre-card-cover">
-      {% if livre.couverture %}
-        <img src="{{ livre.couverture.url }}" alt="Couverture de {{ livre.titre }}">
+      {% if object.cover_image %}
+      <img src="{{ object.cover_image.url }}" alt="Couverture de {{ object.title }}">
       {% else %}
-        <div class="livre-card-cover-placeholder">
-          <span>📖</span>
-        </div>
+      <div class="livre-card-cover-placeholder">
+        <span>📖</span>
+      </div>
       {% endif %}
 
-      {% with dispo=livre.nb_exemplaires_disponibles %}
-        {% if dispo > 0 %}
-          <span class="livre-card-badge badge badge-success">Disponible</span>
-        {% else %}
-          <span class="livre-card-badge badge badge-warning">Indisponible</span>
-        {% endif %}
+      {% with dispo=object.available_exemplars %}
+      {% if dispo > 0 %}
+      <span class="livre-card-badge badge badge-success">Disponible</span>
+      {% else %}
+      <span class="livre-card-badge badge badge-warning">Indisponible</span>
+      {% endif %}
       {% endwith %}
     </div>
 
     <div class="livre-card-body">
-      <h3 class="livre-card-title">{{ livre.titre }}</h3>
+      <h3 class="livre-card-title">{{ object.title }}</h3>
       <p class="livre-card-authors">
-        {% for auteur in livre.auteurs.all %}
-          {{ auteur }}{% if not forloop.last %}, {% endif %}
+        {% for auteur in object.author.all %}
+        {{ auteur }}{% if not forloop.last %}, {% endif %}
         {% empty %}
-          <em>Auteur inconnu</em>
+        <em>Auteur inconnu</em>
         {% endfor %}
       </p>
       <p class="livre-card-meta">
-        {{ livre.editeur }} · {{ livre.annee_publication }}
+        {{ object.publisher }} · {{ object.publication_date|date:"Y" }}
       </p>
-      {% if livre.categories.all %}
-        <div class="livre-card-tags">
-          {% for cat in livre.categories.all %}
-            <span class="tag">{{ cat.nom }}</span>
-          {% endfor %}
-        </div>
+      {% if object.category.all %}
+      <div class="livre-card-tags">
+        {% for cat in object.category.all %}
+        <span class="tag">{{ cat.name }}</span>
+        {% endfor %}
+      </div>
       {% endif %}
     </div>
   </a>

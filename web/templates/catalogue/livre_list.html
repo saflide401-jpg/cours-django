@@ -7,13 +7,16 @@
   <p class="lead">Parcourez les ouvrages disponibles à la bibliothèque universitaire.</p>
 </div>
 
+<nav class="breadcrumb" aria-label="Fil d'Ariane">
+  <a href="{% url 'app:home' %}">Dashboard</a>
+  <span class="separator">›</span>
+  <span aria-current="page">Catalogue</span>
+</nav>
+
 <form method="get" class="filtres-bar" id="filtres-catalogue">
   <div class="filtres-search">
-    <input type="search"
-           name="q"
-           value="{{ request.GET.q }}"
-           placeholder="Titre, auteur, ISBN…"
-           aria-label="Rechercher">
+    <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Titre, auteur, ISBN…"
+      aria-label="Rechercher">
     <span class="search-icon">🔍</span>
   </div>
 
@@ -21,42 +24,40 @@
     <select name="categorie" aria-label="Filtrer par catégorie">
       <option value="">Toutes catégories</option>
       {% for cat in categories %}
-        <option value="{{ cat.slug }}"
-                {% if request.GET.categorie == cat.slug %}selected{% endif %}>
-          {{ cat.nom }}
-        </option>
+      <option value="{{ cat.pk }}" {% if request.GET.categorie == cat.pk|stringformat:"s" %}selected{% endif %}>
+        {{ cat.name }}
+      </option>
       {% endfor %}
     </select>
 
     <label class="checkbox-label">
-      <input type="checkbox" name="dispo" value="1"
-             {% if request.GET.dispo %}checked{% endif %}>
+      <input type="checkbox" name="dispo" value="1" {% if request.GET.dispo %}checked{% endif %}>
       <span>Disponibles uniquement</span>
     </label>
 
     <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
     {% if request.GET %}
-      <a href="{% url 'catalogue:livre_list' %}" class="btn btn-link btn-sm">Réinitialiser</a>
+    <a href="{% url 'app:book-list' %}" class="btn btn-link btn-sm">Réinitialiser</a>
     {% endif %}
   </div>
 </form>
 
-{% if livres %}
-  <div class="grille-livres">
-    {% for livre in livres %}
-      {% include "partials/_livre_card.html" with livre=livre %}
-    {% endfor %}
-  </div>
+{% if object_list %}
+<div class="grille-livres">
+  {% for livre in object_list %}
+  {% include "partials/_livre_card.html" with object=livre %}
+  {% endfor %}
+</div>
 
-  {% include "partials/_pagination.html" with page_obj=page_obj %}
+{% include "partials/_pagination.html" with page_obj=page_obj %}
 {% else %}
-  <div class="empty-state">
-    <span class="empty-icon">📚</span>
-    <h2>Aucun livre ne correspond à votre recherche</h2>
-    <p>Essayez de modifier vos filtres ou de simplifier votre recherche.</p>
-    <a href="{% url 'catalogue:livre_list' %}" class="btn btn-primary">
-      Voir tout le catalogue
-    </a>
-  </div>
+<div class="empty-state">
+  <span class="empty-icon">📚</span>
+  <h2>Aucun livre ne correspond à votre recherche</h2>
+  <p>Essayez de modifier vos filtres ou de simplifier votre recherche.</p>
+  <a href="{% url 'app:book-list' %}" class="btn btn-primary">
+    Voir tout le catalogue
+  </a>
+</div>
 {% endif %}
 {% endblock %}

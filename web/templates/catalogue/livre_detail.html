@@ -1,29 +1,31 @@
 {% extends "base.html" %}
-{% block title %}{{ livre.titre }} · BiblioCampus{% endblock %}
+{% block title %}{{ object.title }} · BiblioCampus{% endblock %}
 
 {% block content %}
 <nav class="breadcrumb" aria-label="Fil d'Ariane">
-  <a href="{# url 'catalogue:livre_list' #}">Catalogue</a>
+  <a href="{% url 'app:home' %}">Dashboard</a>
   <span class="separator">›</span>
-  <span aria-current="page">{{ livre.titre }}</span>
+  <a href="{% url 'app:book-list' %}">Catalogue</a>
+  <span class="separator">›</span>
+  <span aria-current="page">{{ object.title }}</span>
 </nav>
 
 <article class="livre-detail">
   <div class="livre-detail-cover">
-    {% if livre.couverture %}
-    <img src="{{ livre.couverture.url }}" alt="Couverture de {{ livre.titre }}">
+    {% if object.cover_image %}
+    <img src="{{ object.cover_image.url }}" alt="Couverture de {{ object.title }}">
     {% else %}
     <div class="cover-placeholder">📖</div>
     {% endif %}
   </div>
 
   <div class="livre-detail-info">
-    <h1>{{ livre.title }}</h1>
+    <h1>{{ object.title }}</h1>
 
     <p class="livre-detail-authors">
       Par
-      {% for auteur in livre.auteurs.all %}
-      <a href="{# url 'catalogue:auteur_detail' auteur.pk #}">{{ auteur }}</a>{% if not forloop.last %}, {% endif %}
+      {% for auteur in object.author.all %}
+      <a href="{% url 'app:author-detail' auteur.pk %}">{{ auteur }}</a>{% if not forloop.last %}, {% endif %}
       {% empty %}
       <em>Auteur inconnu</em>
       {% endfor %}
@@ -31,29 +33,29 @@
 
     <dl class="dl-grid">
       <dt>Éditeur</dt>
-      <dd>{{ livre.editeur }}</dd>
+      <dd>{{ object.editor }}</dd>
 
       <dt>Année</dt>
-      <dd>{{ livre.annee_publication }}</dd>
+      <dd>{{ object.publication_date }}</dd>
 
       <dt>ISBN</dt>
-      <dd>{{ livre.isbn }}</dd>
+      <dd>{{ object.isbn }}</dd>
 
       <dt>Pages</dt>
-      <dd>{{ livre.nb_pages }}</dd>
+      <dd>{{ object.nb_pages }}</dd>
 
-      {% if livre.categories.all %}
+      {% if object.category.all %}
       <dt>Catégories</dt>
       <dd>
-        {% for cat in livre.categories.all %}
-        <span class="tag">{{ cat.nom }}</span>
+        {% for cat in object.category.all %}
+        <span class="tag">{{ cat.name }}</span>
         {% endfor %}
       </dd>
       {% endif %}
     </dl>
 
     <div class="livre-detail-dispo">
-      {% with dispo=livre.nb_exemplaires_disponibles %}
+      {% with dispo=object.available_exemplars %}
       {% if dispo > 0 %}
       <span class="badge badge-success badge-lg">
         ✓ {{ dispo }} exemplaire{{ dispo|pluralize }} disponible{{ dispo|pluralize }}
@@ -69,11 +71,11 @@
     <div class="livre-detail-actions">
       {% if user.is_authenticated %}
       {% if peut_emprunter %}
-      <a href="{# url 'circulation:emprunt_creer' livre.pk #}" class="btn btn-primary btn-lg">
+      <a href="{# url 'app:emprunt_creer' object.pk #}" class="btn btn-primary btn-lg">
         📚 Emprunter ce livre
       </a>
-      {% elif not livre.est_disponible %}
-      <a href="{# url 'circulation:reservation_creer' livre.pk #}" class="btn btn-secondary btn-lg">
+      {% elif object.available_exemplars > 0 %}
+      <a href="{# url 'app:reservation_creer' object.pk #}" class="btn btn-secondary btn-lg">
         🔔 Réserver
       </a>
       <p class="action-info">
@@ -90,10 +92,10 @@
     </div>
   </div>
 
-  {% if livre.resume %}
+  {% if object.summary %}
   <section class="livre-detail-resume">
     <h2>Résumé</h2>
-    <p>{{ livre.resume|linebreaks }}</p>
+    <p>{{ object.summary|linebreaks }}</p>
   </section>
   {% endif %}
 
@@ -109,13 +111,13 @@
         </tr>
       </thead>
       <tbody>
-        {% for ex in livre.exemplaires.all %}
+        {% for ex in object.exemplars.all %}
         <tr>
-          <td><code>{{ ex.code_barre }}</code></td>
-          <td>{{ ex.get_etat_display }}</td>
-          <td>{{ ex.localisation }}</td>
+          <td><code>{{ ex.barcode }}</code></td>
+          <td>{{ ex.state }}</td>
+          <td>{{ ex.location }}</td>
           <td>
-            {% if ex.est_empruntable %}
+            {% if ex.available %}
             <span class="badge badge-success">Disponible</span>
             {% else %}
             <span class="badge badge-muted">Emprunté</span>

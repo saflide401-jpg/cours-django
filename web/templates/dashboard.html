@@ -35,12 +35,15 @@
   <section class="card">
     <header class="card-header">
       <h2>Top 10 des livres ce mois-ci</h2>
+      <a href="{% url 'app:book-list' %}" class="card-header-action">
+        Consulter le catalogue →
+      </a>
     </header>
     {% if top_livres %}
     <ol class="top-list">
       {% for livre in top_livres %}
       <li>
-        <a href="{# url 'app:livre_detail' livre.pk #}">{{ livre.title }}</a>
+        <a href="{% url 'app:book-detail' livre.pk %}">{{ livre.title }}</a>
         <span class="top-list-count">
           {{ livre.nb_emprunts }} emprunt{{ livre.nb_emprunts|pluralize }}
         </span>

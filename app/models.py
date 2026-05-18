@@ -41,6 +41,11 @@ class Book(models.Model):
         "Image de couverture", upload_to="covers/", null=True, blank=True
     )
 
+    def available_exemplars(self):
+        return self.exemplars.filter(
+            available=True, borrowings__return_date__isnull=True
+        ).count()
+
     class Meta:
         verbose_name = "Livre"
         verbose_name_plural = "Livres"
@@ -87,7 +92,9 @@ class StudentProfile(models.Model):
 
 
 class Borrowing(models.Model):
-    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name="borrowings")
+    student = models.ForeignKey(
+        StudentProfile, on_delete=models.CASCADE, related_name="borrowings"
+    )
     exemplar = models.ForeignKey(
         Exemplar, on_delete=models.CASCADE, related_name="borrowings"
     )

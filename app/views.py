@@ -1,9 +1,8 @@
-from django.shortcuts import render
 from django.utils.timezone import now
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, ListView
 from django.db.models import Count
 
-from app.models import Book, Exemplar, Borrowing
+from app.models import Book, Exemplar, Borrowing, Category, Author
 
 # Create your views here.
 
@@ -49,3 +48,24 @@ class HomeView(TemplateView):
 class BookDetailView(DetailView):
     model = Book
     template_name = "catalogue/livre_detail.html"
+
+
+class BookListView(ListView):
+    model = Book
+    template_name = "catalogue/livre_list.html"
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        return context
+
+
+class AuthorDetailView(DetailView):
+    model = Author
+    template_name = "catalogue/auteur_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["books"] = self.object.books.all()
+        return context

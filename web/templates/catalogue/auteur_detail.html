@@ -1,40 +1,38 @@
 {% extends "base.html" %}
-{% block title %}{{ auteur }} · BiblioCampus{% endblock %}
+{% block title %}{{ object }} · BiblioCampus{% endblock %}
 
 {% block content %}
-<nav class="breadcrumb">
-  <a href="{% url 'catalogue:livre_list' %}">Catalogue</a>
+<nav class="breadcrumb" aria-label="Fil d'Ariane">
+  <a href="{% url 'app:home' %}">Dashboard</a>
   <span class="separator">›</span>
-  <span aria-current="page">{{ auteur }}</span>
+  <a href="{# url 'app:author-list' #}">Auteurs</a>
+  <span class="separator">›</span>
+  <span aria-current="page">{{ object }}</span>
 </nav>
 
 <article class="auteur-detail">
   <header class="auteur-header">
-    <h1>{{ auteur.prenom }} {{ auteur.nom }}</h1>
+    <h1>{{ object.firstname }} {{ object.lastname }}</h1>
     <dl class="auteur-meta">
-      {% if auteur.nationalite %}
-        <dt>Nationalité</dt>
-        <dd>{{ auteur.nationalite }}</dd>
-      {% endif %}
-      {% if auteur.date_naissance %}
-        <dt>Naissance</dt>
-        <dd>{{ auteur.date_naissance|date:"d F Y" }}</dd>
+      {% if object.birthdate %}
+      <dt>Naissance</dt>
+      <dd>{{ object.birthdate|date:"d F Y" }}</dd>
       {% endif %}
     </dl>
-    {% if auteur.biographie %}
-      <p class="auteur-bio">{{ auteur.biographie|linebreaks }}</p>
+    {% if object.biography %}
+    <p class="auteur-bio">{{ object.biography|linebreaks }}</p>
     {% endif %}
   </header>
 
-  <h2>Ouvrages disponibles ({{ livres|length }})</h2>
-  {% if livres %}
-    <div class="grille-livres">
-      {% for livre in livres %}
-        {% include "partials/_livre_card.html" with livre=livre %}
-      {% endfor %}
-    </div>
+  <h2>Ouvrages disponibles ({{ books|length }})</h2>
+  {% if books %}
+  <div class="grille-livres">
+    {% for book in books %}
+    {% include "partials/_livre_card.html" with object=book %}
+    {% endfor %}
+  </div>
   {% else %}
-    <p class="vide">Aucun ouvrage de cet auteur n'est référencé.</p>
+  <p class="vide">Aucun ouvrage de cet auteur n'est référencé.</p>
   {% endif %}
 </article>
 {% endblock %}
